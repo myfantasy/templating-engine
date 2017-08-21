@@ -1,0 +1,7 @@
+C:\Users\scherbina\Documents\repos\templating-engine\templating-engine\TemplatingEngine\bin\Debug\netcoreapp1.1\MyFantasy.TemplatingEngine.deps.json
+C:\Users\scherbina\Documents\repos\templating-engine\templating-engine\TemplatingEngine\bin\Debug\netcoreapp1.1\MyFantasy.TemplatingEngine.dll
+C:\Users\scherbina\Documents\repos\templating-engine\templating-engine\TemplatingEngine\obj\Debug\netcoreapp1.1\TemplatingEngine.csprojResolveAssemblyReference.cache
+C:\Users\scherbina\Documents\repos\templating-engine\templating-engine\TemplatingEngine\obj\Debug\netcoreapp1.1\TemplatingEngine.AssemblyInfo.cs
+C:\Users\scherbina\Documents\repos\templating-engine\templating-engine\TemplatingEngine\bin\Debug\netcoreapp1.1\MyFantasy.TemplatingEngine.pdb
+C:\Users\scherbina\Documents\repos\templating-engine\templating-engine\TemplatingEngine\obj\Debug\netcoreapp1.1\MyFantasy.TemplatingEngine.dll
+C:\Users\scherbina\Documents\repos\templating-engine\templating-engine\TemplatingEngine\obj\Debug\netcoreapp1.1\MyFantasy.TemplatingEngine.pdb
