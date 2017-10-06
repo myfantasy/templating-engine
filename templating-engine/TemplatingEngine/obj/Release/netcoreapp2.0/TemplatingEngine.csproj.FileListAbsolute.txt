@@ -1,9 +1,0 @@
-C:\Users\scherbina\Documents\repos\templating-engine\templating-engine\TemplatingEngine\bin\Release\netcoreapp2.0\MyFantasy.TemplatingEngine.deps.json
-C:\Users\scherbina\Documents\repos\templating-engine\templating-engine\TemplatingEngine\bin\Release\netcoreapp2.0\MyFantasy.TemplatingEngine.dll
-C:\Users\scherbina\Documents\repos\templating-engine\templating-engine\TemplatingEngine\bin\Release\netcoreapp2.0\MyFantasy.TemplatingEngine.pdb
-C:\Users\scherbina\Documents\repos\templating-engine\templating-engine\TemplatingEngine\obj\Release\netcoreapp2.0\TemplatingEngine.csprojResolveAssemblyReference.cache
-C:\Users\scherbina\Documents\repos\templating-engine\templating-engine\TemplatingEngine\obj\Release\netcoreapp2.0\TemplatingEngine.csproj.CoreCompileInputs.cache
-C:\Users\scherbina\Documents\repos\templating-engine\templating-engine\TemplatingEngine\obj\Release\netcoreapp2.0\TemplatingEngine.AssemblyInfoInputs.cache
-C:\Users\scherbina\Documents\repos\templating-engine\templating-engine\TemplatingEngine\obj\Release\netcoreapp2.0\TemplatingEngine.AssemblyInfo.cs
-C:\Users\scherbina\Documents\repos\templating-engine\templating-engine\TemplatingEngine\obj\Release\netcoreapp2.0\MyFantasy.TemplatingEngine.dll
-C:\Users\scherbina\Documents\repos\templating-engine\templating-engine\TemplatingEngine\obj\Release\netcoreapp2.0\MyFantasy.TemplatingEngine.pdb
