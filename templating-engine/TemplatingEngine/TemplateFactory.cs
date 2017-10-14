@@ -7,6 +7,441 @@ namespace MyFantasy.TemplatingEngine
 {
     public static class TemplateFactory
     {
+        public static string t_var_at = "@@@";
+        public static string t_mfignor = "<mfignor>";
+        public static string t_mfignor_end = "</mfignor>";
+
+        public static string t_mfvalue_attr = "mfvar";
+
+        public static string t_mfvalue = "<mfvalue ";
+        public static string t_mfvalue_end = "</mfvalue>";
+
+        public static string t_mfif = "<mfif ";
+        public static string t_mfif_end = "</mfif>";
+        public static string t_mfifnot = "<mfifnot ";
+        public static string t_mfifnot_end = "</mfifnot>";
+        public static string t_mfifexists = "<mfifexists ";
+        public static string t_mfifexists_end = "</mfifexists>";
+        public static string t_mfifnotexists = "<mfifnotexists ";
+        public static string t_mfifnotexists_end = "</mfifnotexists>";
+        public static string t_mffor = "<mffor ";
+        public static string t_mffor_end = "</mffor>";
+
+        public static string t_mffunc = "<mffunc ";
+        public static string t_mffunc_end = "</mffunc>";
+        public static string t_mfoperand = "<mfoperand>";
+        public static string t_mfoperand_end = "</mfoperand>";
+
+        public static string[] stop_leters = new string[] { " ", "\r", "\n", "\t", "\"", "'", "<" };
+
+        public static List<TemplateItem> SplitVars_v2(string template)
+        {
+            int stop_pos;
+            return SplitVars_v2(template, 0, null, out stop_pos);
+        }
+        public static List<TemplateItem> SplitVars_v2(string template, int current_pos, string stop_word, out int stop_pos)
+        {
+            stop_pos = 0;
+            List<TemplateItem> tt = new List<TemplateItem>();
+
+            int current_pos_last_step = current_pos;
+
+            string[] start_words = new string[] { t_var_at, t_mfignor, t_mfvalue,
+                    t_mfif, t_mfifnot, t_mfifexists, t_mfifnotexists, t_mffor, t_mffunc,
+                    stop_word };
+
+            var si = template.IndexOfAnyItem(start_words, current_pos);
+            bool found_stop_word = false;
+
+            while (si.Item2 > 0 && !found_stop_word)
+            {
+                if (si.Item2 - current_pos_last_step > 0)
+                {
+                    tt.Add(new TemplateItem() { tit = TemplateItemType.text, name = template.Substring(current_pos_last_step, si.Item2 - current_pos_last_step) });
+                }
+                current_pos = si.Item2 + si.Item1.Length;
+
+                #region stop_word
+                if (si.Item1 == stop_word && stop_word != null)
+                {
+                    stop_pos = si.Item2 + stop_word.Length;
+                    found_stop_word = true;
+                }
+                #endregion
+                #region t_mfignor
+                if (si.Item1 == t_mfignor)
+                {
+                    int ioe = template.IndexOf(t_mfignor_end, current_pos, StringComparison.OrdinalIgnoreCase);
+                    if (ioe > 0)
+                    {
+                        current_pos = ioe + t_mfignor_end.Length;
+                        current_pos_last_step = current_pos;
+                    }
+                    else
+                    {
+                        current_pos = template.Length;
+                        current_pos_last_step = current_pos;
+                    }
+                }
+                #endregion
+
+                #region t_var_at @@@
+                if (si.Item1 == t_var_at)
+                {
+                    var es = template.IndexOfAnyItem(stop_leters, current_pos);
+                    if (es.Item2 > 0)
+                    {
+                        string var_name = template.Substring(current_pos, es.Item2 - (current_pos));
+
+                        if (var_name != "")
+                        {
+                            tt.Add(new TemplateItem() { tit = TemplateItemType.var, name = var_name });
+                        }
+
+                        current_pos = es.Item2;
+                        current_pos_last_step = current_pos;
+                    }
+                    else
+                    {
+                        string var_name = template.Substring(current_pos);
+                        if (var_name != "")
+                        {
+                            tt.Add(new TemplateItem() { tit = TemplateItemType.var, name = var_name });
+                        }
+
+                        current_pos = template.Length;
+                        current_pos_last_step = current_pos;
+                    }
+                }
+                #endregion
+                #region t_mfvalue
+                if (si.Item1 == t_mfvalue)
+                {
+                    int ioe = template.IndexOf(t_mfvalue_end, current_pos, StringComparison.OrdinalIgnoreCase);
+                    int ioet = template.IndexOf(">", current_pos, StringComparison.OrdinalIgnoreCase);
+                    int iov = template.IndexOf(t_mfvalue_attr, current_pos, StringComparison.OrdinalIgnoreCase);
+                    string var_name = null;
+                    if (iov > 0)
+                    {
+                        int ioq = template.IndexOf("\"", iov, StringComparison.OrdinalIgnoreCase);
+                        int ioq2 = ioq > 0 ? template.IndexOf("\"", ioq + 1, StringComparison.OrdinalIgnoreCase) : -1;
+                        if (ioq2 > 0 && ioq2 < ioet)
+                        {
+                            var_name = template.Substring(ioq + 1, ioq2 - ioq - 1);
+                        }
+                    }
+
+                    if (iov < ioet && ioe > ioet && var_name != null)
+                    {
+                        if (var_name != "")
+                        {
+                            tt.Add(new TemplateItem() { tit = TemplateItemType.var, name = var_name });
+                        }
+
+                        current_pos = ioe + t_mfvalue_end.Length;
+                        current_pos_last_step = current_pos;
+                    }
+                    else
+                    {
+                        current_pos = template.Length;
+                        current_pos_last_step = current_pos;
+                    }
+                }
+                #endregion
+
+                #region t_mfif
+                if (si.Item1 == t_mfif)
+                {
+                    int ioet = template.IndexOf(">", current_pos, StringComparison.OrdinalIgnoreCase);
+                    int iov = template.IndexOf(t_mfvalue_attr, current_pos, StringComparison.OrdinalIgnoreCase);
+                    string var_name = null;
+                    if (iov > 0)
+                    {
+                        int ioq = template.IndexOf("\"", iov, StringComparison.OrdinalIgnoreCase);
+                        int ioq2 = ioq > 0 ? template.IndexOf("\"", ioq + 1, StringComparison.OrdinalIgnoreCase) : -1;
+                        if (ioq2 > 0 && ioq2 < ioet)
+                        {
+                            var_name = template.Substring(ioq + 1, ioq2 - ioq - 1);
+                        }
+                    }
+
+                    if (iov < ioet && var_name != null)
+                    {
+                        if (var_name != "")
+                        {
+                            int stop_pos_o;
+
+                            List<TemplateItem> tti = SplitVars_v2(template, ioet + 1, t_mfif_end, out stop_pos_o);
+
+                            tt.Add(new TemplateItem() { tit = TemplateItemType.if_, name = var_name, lti = tti });
+
+                            current_pos = stop_pos_o + t_mfif_end.Length;
+                            current_pos_last_step = current_pos;
+                        }
+                        else
+                        {
+                            current_pos = template.Length;
+                            current_pos_last_step = current_pos;
+                        }
+                    }
+                    else
+                    {
+                        current_pos = template.Length;
+                        current_pos_last_step = current_pos;
+                    }
+                }
+                #endregion
+                #region t_mfifnot
+                if (si.Item1 == t_mfifnot)
+                {
+                    int ioet = template.IndexOf(">", current_pos, StringComparison.OrdinalIgnoreCase);
+                    int iov = template.IndexOf(t_mfvalue_attr, current_pos, StringComparison.OrdinalIgnoreCase);
+                    string var_name = null;
+                    if (iov > 0)
+                    {
+                        int ioq = template.IndexOf("\"", iov, StringComparison.OrdinalIgnoreCase);
+                        int ioq2 = ioq > 0 ? template.IndexOf("\"", ioq + 1, StringComparison.OrdinalIgnoreCase) : -1;
+                        if (ioq2 > 0 && ioq2 < ioet)
+                        {
+                            var_name = template.Substring(ioq + 1, ioq2 - ioq - 1);
+                        }
+                    }
+
+                    if (iov < ioet && var_name != null)
+                    {
+                        if (var_name != "")
+                        {
+                            int stop_pos_o;
+
+                            List<TemplateItem> tti = SplitVars_v2(template, ioet + 1, t_mfifnot_end, out stop_pos_o);
+
+                            tt.Add(new TemplateItem() { tit = TemplateItemType.not_if_, name = var_name, lti = tti });
+
+                            current_pos = stop_pos_o + t_mfifnot_end.Length;
+                            current_pos_last_step = current_pos;
+                        }
+                        else
+                        {
+                            current_pos = template.Length;
+                            current_pos_last_step = current_pos;
+                        }
+                    }
+                    else
+                    {
+                        current_pos = template.Length;
+                        current_pos_last_step = current_pos;
+                    }
+                }
+                #endregion
+                #region t_mfifexists
+                if (si.Item1 == t_mfifexists)
+                {
+                    int ioet = template.IndexOf(">", current_pos, StringComparison.OrdinalIgnoreCase);
+                    int iov = template.IndexOf(t_mfvalue_attr, current_pos, StringComparison.OrdinalIgnoreCase);
+                    string var_name = null;
+                    if (iov > 0)
+                    {
+                        int ioq = template.IndexOf("\"", iov, StringComparison.OrdinalIgnoreCase);
+                        int ioq2 = ioq > 0 ? template.IndexOf("\"", ioq + 1, StringComparison.OrdinalIgnoreCase) : -1;
+                        if (ioq2 > 0 && ioq2 < ioet)
+                        {
+                            var_name = template.Substring(ioq + 1, ioq2 - ioq - 1);
+                        }
+                    }
+
+                    if (iov < ioet && var_name != null)
+                    {
+                        if (var_name != "")
+                        {
+                            int stop_pos_o;
+
+                            List<TemplateItem> tti = SplitVars_v2(template, ioet + 1, t_mfifexists_end, out stop_pos_o);
+
+                            tt.Add(new TemplateItem() { tit = TemplateItemType.if_exists_, name = var_name, lti = tti });
+
+                            current_pos = stop_pos_o + t_mfifexists_end.Length;
+                            current_pos_last_step = current_pos;
+                        }
+                        else
+                        {
+                            current_pos = template.Length;
+                            current_pos_last_step = current_pos;
+                        }
+                    }
+                    else
+                    {
+                        current_pos = template.Length;
+                        current_pos_last_step = current_pos;
+                    }
+                }
+                #endregion
+                #region t_mfifnotexists
+                if (si.Item1 == t_mfifnotexists)
+                {
+                    int ioet = template.IndexOf(">", current_pos, StringComparison.OrdinalIgnoreCase);
+                    int iov = template.IndexOf(t_mfvalue_attr, current_pos, StringComparison.OrdinalIgnoreCase);
+                    string var_name = null;
+                    if (iov > 0)
+                    {
+                        int ioq = template.IndexOf("\"", iov, StringComparison.OrdinalIgnoreCase);
+                        int ioq2 = ioq > 0 ? template.IndexOf("\"", ioq + 1, StringComparison.OrdinalIgnoreCase) : -1;
+                        if (ioq2 > 0 && ioq2 < ioet)
+                        {
+                            var_name = template.Substring(ioq + 1, ioq2 - ioq - 1);
+                        }
+                    }
+
+                    if (iov < ioet && var_name != null)
+                    {
+                        if (var_name != "")
+                        {
+                            int stop_pos_o;
+
+                            List<TemplateItem> tti = SplitVars_v2(template, ioet + 1, t_mfifnotexists_end, out stop_pos_o);
+
+                            tt.Add(new TemplateItem() { tit = TemplateItemType.if_not_exists_, name = var_name, lti = tti });
+
+                            current_pos = stop_pos_o + t_mfifnotexists_end.Length;
+                            current_pos_last_step = current_pos;
+                        }
+                        else
+                        {
+                            current_pos = template.Length;
+                            current_pos_last_step = current_pos;
+                        }
+                    }
+                    else
+                    {
+                        current_pos = template.Length;
+                        current_pos_last_step = current_pos;
+                    }
+                }
+                #endregion
+                #region t_mffor
+                if (si.Item1 == t_mffor)
+                {
+                    int ioet = template.IndexOf(">", current_pos, StringComparison.OrdinalIgnoreCase);
+                    int iov = template.IndexOf(t_mfvalue_attr, current_pos, StringComparison.OrdinalIgnoreCase);
+                    string var_name = null;
+                    if (iov > 0)
+                    {
+                        int ioq = template.IndexOf("\"", iov, StringComparison.OrdinalIgnoreCase);
+                        int ioq2 = ioq > 0 ? template.IndexOf("\"", ioq + 1, StringComparison.OrdinalIgnoreCase) : -1;
+                        if (ioq2 > 0 && ioq2 < ioet)
+                        {
+                            var_name = template.Substring(ioq + 1, ioq2 - ioq - 1);
+                        }
+                    }
+
+                    if (iov < ioet && var_name != null)
+                    {
+                        if (var_name != "")
+                        {
+                            int stop_pos_o;
+
+                            List<TemplateItem> tti = SplitVars_v2(template, ioet + 1, t_mffor_end, out stop_pos_o);
+
+                            tt.Add(new TemplateItem() { tit = TemplateItemType.for_, name = var_name, lti = tti });
+
+                            current_pos = stop_pos_o + t_mffor_end.Length;
+                            current_pos_last_step = current_pos;
+                        }
+                        else
+                        {
+                            current_pos = template.Length;
+                            current_pos_last_step = current_pos;
+                        }
+                    }
+                    else
+                    {
+                        current_pos = template.Length;
+                        current_pos_last_step = current_pos;
+                    }
+                }
+                #endregion
+
+                #region t_mffunc
+                if (si.Item1 == t_mffunc)
+                {
+                    int ioet = template.IndexOf(">", current_pos, StringComparison.OrdinalIgnoreCase);
+                    int iov = template.IndexOf(t_mfvalue_attr, current_pos, StringComparison.OrdinalIgnoreCase);
+                    string var_name = null;
+                    if (iov > 0)
+                    {
+                        int ioq = template.IndexOf("\"", iov, StringComparison.OrdinalIgnoreCase);
+                        int ioq2 = ioq > 0 ? template.IndexOf("\"", ioq + 1, StringComparison.OrdinalIgnoreCase) : -1;
+                        if (ioq2 > 0 && ioq2 < ioet)
+                        {
+                            var_name = template.Substring(ioq + 1, ioq2 - ioq - 1);
+                        }
+                    }
+
+                    if (iov < ioet && var_name != null)
+                    {
+                        if (var_name != "")
+                        {
+                            int stop_pos_o;
+
+                            List<List<TemplateItem>> _operand = new List<List<TemplateItem>>();
+                            stop_pos_o = ioet + 1;
+
+
+                            while (template.IndexOf(t_mfoperand, stop_pos_o) > 0 &&
+                                    (t_mffunc_end != template.Substring(stop_pos_o, t_mffunc_end.Length)) // в этом условии не учтены пробелы и другие игнорируемые знаки
+                                  )
+                            {
+                                stop_pos_o = template.IndexOf(t_mfoperand, stop_pos_o) + t_mfoperand.Length;
+
+                                List<TemplateItem> tti = SplitVars_v2(template, stop_pos_o, t_mfoperand_end, out stop_pos_o);
+
+                                _operand.Add(tti);
+                            }
+
+                            if (
+                                    template.IndexOf(t_mffunc_end, stop_pos_o) > 0
+                                )
+                            {
+
+
+                                tt.Add(new TemplateItem() { tit = TemplateItemType.func_, name = var_name, operand = _operand });
+
+                                current_pos = template.IndexOf(t_mffunc_end, stop_pos_o) + t_mffunc_end.Length;
+                                current_pos_last_step = current_pos;
+                            }
+                            else
+                            {
+                                current_pos = template.Length;
+                                current_pos_last_step = current_pos;
+                            }
+                        }
+                        else
+                        {
+                            current_pos = template.Length;
+                            current_pos_last_step = current_pos;
+                        }
+                    }
+                    else
+                    {
+                        current_pos = template.Length;
+                        current_pos_last_step = current_pos;
+                    }
+                }
+                #endregion
+                si = template.IndexOfAnyItem(start_words, current_pos);
+            }
+
+            if (!found_stop_word)
+            {
+                if (template.Length - current_pos_last_step > 0)
+                {
+                    tt.Add(new TemplateItem() { tit = TemplateItemType.text, name = template.Substring(current_pos, template.Length - current_pos_last_step) });
+                }
+                stop_pos = template.Length;
+            }
+
+            return tt;
+        }
+
         /// <summary>
         /// // <!--@ -- начало любого шаблона
         /// // <!--@@var_name-->

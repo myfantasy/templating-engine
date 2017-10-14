@@ -30,7 +30,7 @@ namespace MyFantasy.TemplatingEngine
 
             if (c != null)
             {
-                var tt = TemplateFactory.SplitVars(c);
+                var tt = SplitVarsDefault(c);
                 if (values_list != null)
                 {
                     string res = TemplateFactory.RenderTemplate(tt, values_list, ext_obj);
@@ -56,7 +56,7 @@ namespace MyFantasy.TemplatingEngine
 
                 if (!templ.IsNullOrWhiteSpace())
                 {
-                    var tt = TemplateFactory.SplitVars(templ);
+                    var tt = SplitVarsDefault(templ);
                     t = new Tuple<DateTime, List<TemplateItem>>(DateTime.Now, tt);
                     lock (_templates)
                     {
@@ -122,5 +122,7 @@ namespace MyFantasy.TemplatingEngine
         }
 
         public static Dictionary<string, object> _template_add_params = new Dictionary<string, object>();
+
+        public static Func<string, List<TemplateItem>> SplitVarsDefault = TemplateFactory.SplitVars_v2;
     }
 }

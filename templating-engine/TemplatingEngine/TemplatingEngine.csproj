@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyName>MyFantasy.TemplatingEngine</AssemblyName>
     <RootNamespace>MyFantasy.TemplatingEngine</RootNamespace>
     <Copyright>myfantasy.ru</Copyright>
@@ -9,10 +9,11 @@
     <RepositoryUrl>https://github.com/myfantasy/templating-engine</RepositoryUrl>
     <PackageProjectUrl>https://github.com/myfantasy/templating-engine</PackageProjectUrl>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MyFantasy.SystemClasses" Version="1.0.1" />
+    <PackageReference Include="MyFantasy.SystemClasses" Version="1.0.5" />
   </ItemGroup>
 
 </Project>
