@@ -8,29 +8,29 @@ namespace MyFantasy.TemplatingEngine
     public static class TemplateFactory
     {
         public static string t_var_at = "@@@";
-        public static string t_mfignor = "<mfignor>";
-        public static string t_mfignor_end = "</mfignor>";
+        public static string t_mfignor = "<mf_ignor>";
+        public static string t_mfignor_end = "</mf_ignor>";
 
         public static string t_mfvalue_attr = "mfvar";
 
-        public static string t_mfvalue = "<mfvalue ";
-        public static string t_mfvalue_end = "</mfvalue>";
+        public static string t_mfvalue = "<mf_value ";
+        public static string t_mfvalue_end = "</mf_value>";
 
-        public static string t_mfif = "<mfif ";
-        public static string t_mfif_end = "</mfif>";
-        public static string t_mfifnot = "<mfifnot ";
-        public static string t_mfifnot_end = "</mfifnot>";
-        public static string t_mfifexists = "<mfifexists ";
-        public static string t_mfifexists_end = "</mfifexists>";
-        public static string t_mfifnotexists = "<mfifnotexists ";
-        public static string t_mfifnotexists_end = "</mfifnotexists>";
-        public static string t_mffor = "<mffor ";
-        public static string t_mffor_end = "</mffor>";
+        public static string t_mfif = "<mf_if ";
+        public static string t_mfif_end = "</mf_if>";
+        public static string t_mfifnot = "<mf_if_not ";
+        public static string t_mfifnot_end = "</mf_if_not>";
+        public static string t_mfifexists = "<mf_if_exists ";
+        public static string t_mfifexists_end = "</mf_if_exists>";
+        public static string t_mfifnotexists = "<mf_if_not_exists ";
+        public static string t_mfifnotexists_end = "</mf_if_not_exists>";
+        public static string t_mffor = "<mf_for ";
+        public static string t_mffor_end = "</mf_for>";
 
-        public static string t_mffunc = "<mffunc ";
-        public static string t_mffunc_end = "</mffunc>";
-        public static string t_mfoperand = "<mfoperand>";
-        public static string t_mfoperand_end = "</mfoperand>";
+        public static string t_mffunc = "<mf_func ";
+        public static string t_mffunc_end = "</mf_func>";
+        public static string t_mfoperand = "<mf_operand>";
+        public static string t_mfoperand_end = "</mf_operand>";
 
         public static string[] stop_leters = new string[] { " ", "\r", "\n", "\t", "\"", "'", "<" };
 
