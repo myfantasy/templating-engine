@@ -175,7 +175,7 @@ namespace MyFantasy.TemplatingEngine
 
                             tt.Add(new TemplateItem() { tit = TemplateItemType.if_, name = var_name, lti = tti });
 
-                            current_pos = stop_pos_o + t_mfif_end.Length;
+                            current_pos = stop_pos_o;
                             current_pos_last_step = current_pos;
                         }
                         else
@@ -217,7 +217,7 @@ namespace MyFantasy.TemplatingEngine
 
                             tt.Add(new TemplateItem() { tit = TemplateItemType.not_if_, name = var_name, lti = tti });
 
-                            current_pos = stop_pos_o + t_mfifnot_end.Length;
+                            current_pos = stop_pos_o;
                             current_pos_last_step = current_pos;
                         }
                         else
@@ -259,7 +259,7 @@ namespace MyFantasy.TemplatingEngine
 
                             tt.Add(new TemplateItem() { tit = TemplateItemType.if_exists_, name = var_name, lti = tti });
 
-                            current_pos = stop_pos_o + t_mfifexists_end.Length;
+                            current_pos = stop_pos_o;
                             current_pos_last_step = current_pos;
                         }
                         else
@@ -301,7 +301,7 @@ namespace MyFantasy.TemplatingEngine
 
                             tt.Add(new TemplateItem() { tit = TemplateItemType.if_not_exists_, name = var_name, lti = tti });
 
-                            current_pos = stop_pos_o + t_mfifnotexists_end.Length;
+                            current_pos = stop_pos_o;
                             current_pos_last_step = current_pos;
                         }
                         else
@@ -343,7 +343,7 @@ namespace MyFantasy.TemplatingEngine
 
                             tt.Add(new TemplateItem() { tit = TemplateItemType.for_, name = var_name, lti = tti });
 
-                            current_pos = stop_pos_o + t_mffor_end.Length;
+                            current_pos = stop_pos_o;
                             current_pos_last_step = current_pos;
                         }
                         else
