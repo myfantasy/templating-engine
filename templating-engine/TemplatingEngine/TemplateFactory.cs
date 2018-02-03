@@ -40,7 +40,7 @@ namespace MyFantasy.TemplatingEngine
         public static string c_mfif_end = "<!--/mf_if-->";
         public static string c_mfifnot = "<!--mf_if_not ";
         public static string c_mfifnot_end = "<!--/mf_if_not-->";
-        public static string c_mfifexists = "!--<mf_if_exists ";
+        public static string c_mfifexists = "<!--mf_if_exists ";
         public static string c_mfifexists_end = "<!--/mf_if_exists-->";
         public static string c_mfifnotexists = "<!--mf_if_not_exists ";
         public static string c_mfifnotexists_end = "<!--/mf_if_not_exists-->";
@@ -72,6 +72,7 @@ namespace MyFantasy.TemplatingEngine
 
             string[] start_words = new string[] { t_var_at, t_mfignor, t_mfvalue,
                     t_mfif, t_mfifnot, t_mfifexists, t_mfifnotexists, t_mffor, t_mffunc,
+                    c_mfif, c_mfifnot, c_mfifexists, c_mfifnotexists, c_mffor, c_mffunc,
                     stop_word };
 
             var si = template.IndexOfAnyItem(start_words, current_pos);
@@ -771,13 +772,13 @@ namespace MyFantasy.TemplatingEngine
                             stop_pos_o = ioet + ioet_l;
 
 
-                            while (template.IndexOf(t_mfoperand, stop_pos_o) > 0 &&
+                            while (template.IndexOf(c_mfoperand, stop_pos_o) > 0 &&
                                     (c_mffunc_end != template.Substring(stop_pos_o, c_mffunc_end.Length)) // в этом условии не учтены пробелы и другие игнорируемые знаки
                                   )
                             {
-                                stop_pos_o = template.IndexOf(t_mfoperand, stop_pos_o) + t_mfoperand.Length;
+                                stop_pos_o = template.IndexOf(c_mfoperand, stop_pos_o) + c_mfoperand.Length;
 
-                                List<TemplateItem> tti = SplitVars_v2(template, stop_pos_o, t_mfoperand_end, out stop_pos_o);
+                                List<TemplateItem> tti = SplitVars_v2(template, stop_pos_o, c_mfoperand_end, out stop_pos_o);
 
                                 _operand.Add(tti);
                             }
@@ -1026,6 +1027,31 @@ namespace MyFantasy.TemplatingEngine
             return false;
         }
 
+        public static void RenderItemSet<T>(List<Tuple<string, Dictionary<string, object>>> values, string name, T res)
+        {
+            int i = 0;
+            string l_name = null;
+            while (i < values.Count)
+            {
+                if (values[i].Item1.Length == 0)
+                {
+                    l_name = name;
+                }
+                else if (name.IndexOf(values[i].Item1) == 0)
+                {
+                    l_name = name.Substring(values[i].Item1.Length + 1);
+                }
+                if (l_name != null)
+                {
+                    string[] pars = l_name.Split(new string[] { "." }, StringSplitOptions.None);
+                    values[i].Item2.SetElement(res, pars);
+                    return;
+                }
+                i++;
+                l_name = null;
+            }
+        }
+
 
 
         public static string RenderTemplate(List<TemplateItem> template, List<Tuple<string, Dictionary<string, object>>> values, object ext_obj)
@@ -1107,10 +1133,23 @@ namespace MyFantasy.TemplatingEngine
                 {
                     Func<object, string[], string> func;
                     Func<object, object, string> func_object;
+                    Func<object, string[], object> func_data_get;
                     if (template[i].name == _render_template_name && _render_template_name != null && _render_template != null)
                     {
                         string[] ops = template[i].operand.Select(f => RenderTemplate(f, values, ext_obj)).ToArray();
                         sb.Append(_render_template(ops, values, ext_obj));
+                    }
+                    else
+                    if (funcs_data_get.TryGetValue(template[i].name, out func_data_get) && template[i].operand.Count >= 1)
+                    {
+                        string[] ops = template[i].operand.Select(f => RenderTemplate(f, values, ext_obj)).ToArray();
+                        
+                        string[] func_params = ops.SkipLast(1).ToArray();
+                        string set_name = ops.Last();
+
+                        object o = func_data_get(ext_obj, func_params);
+
+                        RenderItemSet(values, set_name, o);                        
                     }
                     else
                     if (funcs_object.TryGetValue(template[i].name, out func_object) && template[i].operand.Count == 1 && template[i].operand[0].Count == 1 && template[i].operand[0][0].tit == TemplateItemType.var)
@@ -1144,9 +1183,11 @@ namespace MyFantasy.TemplatingEngine
                     { new Tuple<string, Dictionary<string, object>>("", values) };
             return RenderTemplate(template, vls_l, ext_obj);
         }
-
+        
         public static Dictionary<string, Dictionary<int, Func<object, string[], string>>> funcs = new Dictionary<string, Dictionary<int, Func<object, string[], string>>>();
         public static Dictionary<string, Func<object, object, string>> funcs_object = new Dictionary<string,Func<object, object, string>>();
+
+        public static Dictionary<string, Func<object, string[], object>> funcs_data_get = new Dictionary<string, Func<object, string[], object>>();
 
         /// <summary>
         /// Добавить функцию для рендера шаблонов
@@ -1170,8 +1211,24 @@ namespace MyFantasy.TemplatingEngine
             funcs_object.AddIfNotExists(func_name, func);
         }
 
+        /// <summary>
+        /// Добавить функцию получения данных
+        /// </summary>
+        /// <param name="func_name">Имя Функции</param>
+        /// <param name="func">Функция (объект, параметры, object (Результат, который добавится в переменные))</param>
+        public static void AddDataGetFunction(string func_name, Func<object, string[], object> func)
+        {
+            funcs_data_get.AddIfNotExists(func_name, func);
+        }
+
+        /// <summary>
+        /// Функция рендера шалонов
+        /// </summary>
         public static Func<string[], List<Tuple<string, Dictionary<string, object>>>, object, string> _render_template = null;
         
+        /// <summary>
+        /// Название функции рендера шаблонов
+        /// </summary>
         public static string _render_template_name = null;
     }
 }

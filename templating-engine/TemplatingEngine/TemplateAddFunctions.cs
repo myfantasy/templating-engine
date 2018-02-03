@@ -24,6 +24,10 @@ namespace MyFantasy.TemplatingEngine
 
             TemplateFactory.AddParametrFunction("_to_json", _to_json);
 
+
+            TemplateFactory.AddDataGetFunction("_get_current_date", _get_current_date);
+
+
             TemplateManager.LoadTemplate = load_template ?? TemplateManager.LoadTemplate;
 
             TemplateFactory._render_template = TemplateManager._render_template;
@@ -62,6 +66,11 @@ namespace MyFantasy.TemplatingEngine
         public static string _to_json(object ext_obj, object o)
         {
             return o.TryGetJson() ?? "";
+        }
+
+        public static object _get_current_date(object ext_obj, params string[] p)
+        {
+            return DateTime.Now;
         }
     }
 }
