@@ -21,6 +21,11 @@ namespace MyFantasy.TemplatingEngine
             = new Dictionary<string, Dictionary<string, Tuple<DateTime, List<TemplateItem>>>>();
 
 
+        public static int refresh_seconds = 180;
+
+        public static DateTime min_refresh_time = DateTime.Now;
+
+
         public static string RenderTemplate(object ext_obj, string name, Dictionary<string, object> values = null,
             string def_template = null, List<Tuple<string, Dictionary<string, object>>> values_list = null)
         {
@@ -50,7 +55,7 @@ namespace MyFantasy.TemplatingEngine
                 }
             }
 
-            if (t == null || (DateTime.Now - t.Item1).TotalMinutes > 3)
+            if (t == null || (DateTime.Now - t.Item1).TotalSeconds > refresh_seconds || t.Item1 <= min_refresh_time)
             {
                 string templ = LoadTemplate(ext_obj, name) ?? def_template;
 
