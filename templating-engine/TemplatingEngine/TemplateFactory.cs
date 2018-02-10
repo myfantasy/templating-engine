@@ -1140,16 +1140,21 @@ namespace MyFantasy.TemplatingEngine
                         sb.Append(_render_template(ops, values, ext_obj));
                     }
                     else
+                    if (template[i].name == _show_all_params_name)
+                    {
+                        sb.Append(values.Where(f=>f.Item1 == "")?.First()?.Item2.TryGetJson() ?? "");
+                    }
+                    else
                     if (funcs_data_get.TryGetValue(template[i].name, out func_data_get) && template[i].operand.Count >= 1)
                     {
                         string[] ops = template[i].operand.Select(f => RenderTemplate(f, values, ext_obj)).ToArray();
-                        
+
                         string[] func_params = ops.SkipLast(1).ToArray();
                         string set_name = ops.Last();
 
                         object o = func_data_get(ext_obj, func_params);
 
-                        RenderItemSet(values, set_name, o);                        
+                        RenderItemSet(values, set_name, o);
                     }
                     else
                     if (funcs_object.TryGetValue(template[i].name, out func_object) && template[i].operand.Count == 1 && template[i].operand[0].Count == 1 && template[i].operand[0][0].tit == TemplateItemType.var)
@@ -1230,5 +1235,10 @@ namespace MyFantasy.TemplatingEngine
         /// Название функции рендера шаблонов
         /// </summary>
         public static string _render_template_name = null;
+
+        /// <summary>
+        /// Название функции отображения всех параметров
+        /// </summary>
+        public static string _show_all_params_name = null;
     }
 }

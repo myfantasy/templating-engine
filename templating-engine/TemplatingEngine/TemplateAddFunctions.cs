@@ -32,6 +32,7 @@ namespace MyFantasy.TemplatingEngine
 
             TemplateFactory._render_template = TemplateManager._render_template;
             TemplateFactory._render_template_name = "_render_template";
+            TemplateFactory._show_all_params_name = "_show_all_params_name";
         }
 
         public static string _url_encode(object ext_obj, params string[] p)
