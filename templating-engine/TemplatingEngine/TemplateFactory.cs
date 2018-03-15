@@ -1149,8 +1149,11 @@ namespace MyFantasy.TemplatingEngine
                     {
                         string[] ops = template[i].operand.Select(f => RenderTemplate(f, values, ext_obj)).ToArray();
 
-                        string[] func_params = ops.SkipLast(1).ToArray();
-                        string set_name = ops.Last();
+                        //string[] func_params = ops.SkipLast(1).ToArray();
+                        string[] func_params = (ops == null || ops.Length < 2) ? new string[0] : new string[ops.Length - 1];
+                        for (int it = 0; it < ops.Length - 1; it++) { func_params[it] = ops[it]; }
+                        
+                        string set_name = ops?.LastOrDefault();
 
                         object o = func_data_get(ext_obj, func_params);
 
