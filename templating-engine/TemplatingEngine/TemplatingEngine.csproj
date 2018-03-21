@@ -9,13 +9,13 @@
     <RepositoryUrl>https://github.com/myfantasy/templating-engine</RepositoryUrl>
     <PackageProjectUrl>https://github.com/myfantasy/templating-engine</PackageProjectUrl>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.0.6.3</Version>
-    <AssemblyVersion>1.0.6.3</AssemblyVersion>
-    <FileVersion>1.0.6.3</FileVersion>
+    <Version>1.0.6.4</Version>
+    <AssemblyVersion>1.0.6.4</AssemblyVersion>
+    <FileVersion>1.0.6.4</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MyFantasy.SystemClasses" Version="1.0.7.2" />
+    <PackageReference Include="MyFantasy.SystemClasses" Version="1.0.7.3" />
   </ItemGroup>
 
   <ItemGroup>
