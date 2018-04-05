@@ -56,7 +56,7 @@ namespace MyFantasy.TemplatingEngine
         #endregion
 
 
-        public static string[] stop_leters = new string[] { " ", ",", ";", ":", "|", "\r", "\n", "\t", "\"", "'", "<", ")", "(", ">", "-", "+", "|", "\\", "/", "*", "!", "^", "]", "[", "}", "{" };
+        public static string[] stop_leters = new string[] { " ", ",", ";", ":", "|", "\r", "\n", "\t", "\"", "'", "<", ")", "(", ">", "-", "+", "|", "\\", "/", "*", "!", "^", "]", "[", "}", "{", "&", "^", "?", "#" };
 
         public static List<TemplateItem> SplitVars_v2(string template)
         {
