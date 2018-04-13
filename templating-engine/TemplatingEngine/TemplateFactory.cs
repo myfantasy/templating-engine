@@ -206,7 +206,7 @@ namespace MyFantasy.TemplatingEngine
 
                             if (!(iond > 0 && iond < ioet))
                             {
-                                tti = tti.Prepend(new TemplateItem() { tit = TemplateItemType.text, name = "<div " + elements + ">" }).ToList();
+                                tti.Insert(0, new TemplateItem() { tit = TemplateItemType.text, name = "<div " + elements + ">" });
                                 tti.Add(new TemplateItem() { tit = TemplateItemType.text, name = "</div>" });
                             }
 
@@ -259,7 +259,7 @@ namespace MyFantasy.TemplatingEngine
 
                             if (!(iond > 0 && iond < ioet))
                             {
-                                tti = tti.Prepend(new TemplateItem() { tit = TemplateItemType.text, name = "<div " + elements + ">" }).ToList();
+                                tti.Insert(0, new TemplateItem() { tit = TemplateItemType.text, name = "<div " + elements + ">" });
                                 tti.Add(new TemplateItem() { tit = TemplateItemType.text, name = "</div>" });
                             }
 
@@ -312,7 +312,7 @@ namespace MyFantasy.TemplatingEngine
 
                             if (!(iond > 0 && iond < ioet))
                             {
-                                tti = tti.Prepend(new TemplateItem() { tit = TemplateItemType.text, name = "<div " + elements + ">" }).ToList();
+                                tti.Insert(0, new TemplateItem() { tit = TemplateItemType.text, name = "<div " + elements + ">" });
                                 tti.Add(new TemplateItem() { tit = TemplateItemType.text, name = "</div>" });
                             }
 
@@ -365,7 +365,7 @@ namespace MyFantasy.TemplatingEngine
 
                             if (!(iond > 0 && iond < ioet))
                             {
-                                tti = tti.Prepend(new TemplateItem() { tit = TemplateItemType.text, name = "<div " + elements + ">" }).ToList();
+                                tti.Insert(0, new TemplateItem() { tit = TemplateItemType.text, name = "<div " + elements + ">" });
                                 tti.Add(new TemplateItem() { tit = TemplateItemType.text, name = "</div>" });
                             }
 
