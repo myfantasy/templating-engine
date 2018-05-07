@@ -1134,6 +1134,7 @@ namespace MyFantasy.TemplatingEngine
                     Func<object, string[], string> func;
                     Func<object, object, string> func_object;
                     Func<object, string[], object> func_data_get;
+                    Func<object, object, string[], string> func_format_data_get;
                     if (template[i].name == _render_template_name && _render_template_name != null && _render_template != null)
                     {
                         string[] ops = template[i].operand.Select(f => RenderTemplate(f, values, ext_obj)).ToArray();
@@ -1158,6 +1159,32 @@ namespace MyFantasy.TemplatingEngine
                         object o = func_data_get(ext_obj, func_params);
 
                         RenderItemSet(values, set_name, o);
+                    }
+                    else
+                    if (funcs_format_data_get.TryGetValue(template[i].name, out func_format_data_get) && template[i].operand.Count >= 2)
+                    {
+                        string[] ops = template[i].operand.Select(f => RenderTemplate(f, values, ext_obj)).ToArray();
+
+                        object res = null;
+
+                        if (ops[0] == "..")
+                        {
+                            res = values.Where(f => f.Item1 == "")?.First()?.Item2;
+                        }
+
+                        if (res != null || RenderItemGet(values, ops[0], out res) && res != null)
+                        {
+                            sb.Append(res.ToString());
+
+                            string[] func_params = (ops == null || ops.Length < 3) ? new string[0] : new string[ops.Length - 2];
+                            for (int it = 0; it < ops.Length - 2; it++) { func_params[it] = ops[it + 1]; }
+
+                            string set_name = ops?.LastOrDefault();
+
+                            string o = func_format_data_get(ext_obj, res, func_params);
+
+                            RenderItemSet(values, set_name, o);
+                        }
                     }
                     else
                     if (funcs_object.TryGetValue(template[i].name, out func_object) && template[i].operand.Count == 1 && template[i].operand[0].Count == 1 && template[i].operand[0][0].tit == TemplateItemType.var)
@@ -1197,6 +1224,8 @@ namespace MyFantasy.TemplatingEngine
 
         public static Dictionary<string, Func<object, string[], object>> funcs_data_get = new Dictionary<string, Func<object, string[], object>>();
 
+        public static Dictionary<string, Func<object, object, string[], string>> funcs_format_data_get = new Dictionary<string, Func<object, object, string[], string>>();
+
         /// <summary>
         /// Добавить функцию для рендера шаблонов
         /// </summary>
@@ -1227,6 +1256,16 @@ namespace MyFantasy.TemplatingEngine
         public static void AddDataGetFunction(string func_name, Func<object, string[], object> func)
         {
             funcs_data_get.AddIfNotExists(func_name, func);
+        }
+
+        /// <summary>
+        /// Добавить функцию формата получения данных
+        /// </summary>
+        /// <param name="func_name">Имя Функции</param>
+        /// <param name="func">Функция (объект, переменная, параметры, object (Результат, который добавится в переменные))</param>
+        public static void AddFormatDataGetFunction(string func_name, Func<object, object, string[], string> func)
+        {
+            funcs_format_data_get.AddIfNotExists(func_name, func);
         }
 
         /// <summary>

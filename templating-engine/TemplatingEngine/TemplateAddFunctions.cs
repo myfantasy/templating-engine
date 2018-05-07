@@ -26,6 +26,7 @@ namespace MyFantasy.TemplatingEngine
 
 
             TemplateFactory.AddDataGetFunction("_get_current_date", _get_current_date);
+            TemplateFactory.AddFormatDataGetFunction("_format_date", _format_date);
 
 
             TemplateManager.LoadTemplate = load_template ?? TemplateManager.LoadTemplate;
@@ -33,6 +34,23 @@ namespace MyFantasy.TemplatingEngine
             TemplateFactory._render_template = TemplateManager._render_template;
             TemplateFactory._render_template_name = "_render_template";
             TemplateFactory._show_all_params_name = "_show_all_params_name";
+        }
+
+        public static string _format_date(object ext_obj, object val, params string[] p)
+        {
+            if (!(val is DateTime))
+            {
+                return null;
+            }
+            DateTime dt = (DateTime)val;
+            if (p.Length == 0 || p[0].IsNullOrWhiteSpace())
+            {
+                return dt.ToString("yyyy-MM-dd HH:mm");
+            }
+            else
+            {
+                return dt.ToString(p[0]);
+            }
         }
 
         public static string _url_encode(object ext_obj, params string[] p)
