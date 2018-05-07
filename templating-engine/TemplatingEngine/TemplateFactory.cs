@@ -1174,8 +1174,6 @@ namespace MyFantasy.TemplatingEngine
 
                         if (res != null || RenderItemGet(values, ops[0], out res) && res != null)
                         {
-                            sb.Append(res.ToString());
-
                             string[] func_params = (ops == null || ops.Length < 3) ? new string[0] : new string[ops.Length - 2];
                             for (int it = 0; it < ops.Length - 2; it++) { func_params[it] = ops[it + 1]; }
 
