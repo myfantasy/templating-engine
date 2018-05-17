@@ -16,6 +16,7 @@ namespace MyFantasy.TemplatingEngine
         {
             TemplateFactory.AddFunction("_url_encode", 1, _url_encode);
             TemplateFactory.AddFunction("_html_encode", 1, _html_encode);
+            TemplateFactory.AddFunction("_json_str_encode", 1, _json_str_encode);
             TemplateFactory.AddFunction("_replace", 1, _replace);
             TemplateFactory.AddFunction("_replace", 3, _replace);
             TemplateFactory.AddFunction("_replace", 5, _replace);
@@ -51,6 +52,13 @@ namespace MyFantasy.TemplatingEngine
             {
                 return dt.ToString(p[0]);
             }
+        }
+
+        public static string _json_str_encode(object ext_obj, params string[] p)
+        {
+            if (p == null || p.Length < 1)
+            { return ""; }
+            return p[0].Replace("\\", "\\\\").Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t").Replace("\"", "\\\"");
         }
 
         public static string _url_encode(object ext_obj, params string[] p)

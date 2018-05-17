@@ -9,9 +9,9 @@
     <RepositoryUrl>https://github.com/myfantasy/templating-engine</RepositoryUrl>
     <PackageProjectUrl>https://github.com/myfantasy/templating-engine</PackageProjectUrl>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.0.6.10</Version>
-    <AssemblyVersion>1.0.6.10</AssemblyVersion>
-    <FileVersion>1.0.6.10</FileVersion>
+    <Version>1.0.6.11</Version>
+    <AssemblyVersion>1.0.6.11</AssemblyVersion>
+    <FileVersion>1.0.6.11</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
