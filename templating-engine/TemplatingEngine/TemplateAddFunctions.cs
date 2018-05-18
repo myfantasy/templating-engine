@@ -28,7 +28,7 @@ namespace MyFantasy.TemplatingEngine
 
             TemplateFactory.AddDataGetFunction("_get_current_date", _get_current_date);
             TemplateFactory.AddFormatDataGetFunction("_format_date", _format_date);
-            TemplateFactory.AddFormatDataGetFunction("_set", _set);
+            TemplateFactory.AddDataGetFunction("_set", _set);
 
 
             TemplateManager.LoadTemplate = load_template ?? TemplateManager.LoadTemplate;
@@ -55,9 +55,14 @@ namespace MyFantasy.TemplatingEngine
             }
         }
 
-        public static string _set(object ext_obj, object val, params string[] p)
+        public static string _set(object ext_obj, params string[] p)
         {
-            return val.ToString();
+            if (p == null || p.Length == 0 || p[0].IsNullOrWhiteSpace())
+            {
+                return "";
+            }
+
+            return p[0];
         }
 
         public static string _json_str_encode(object ext_obj, params string[] p)
